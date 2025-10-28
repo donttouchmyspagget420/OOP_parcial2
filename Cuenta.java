@@ -1,8 +1,12 @@
+package bna;
+
 public class Cuenta {
+  private static int cantidad_de_clientes = 0;
   private String nombre;
-  private int pin;
+  private int pin, id;
   private double dinero;
 
+  // getters && setters
   public String getNombre() {
     return nombre;
   }
@@ -19,11 +23,15 @@ public class Cuenta {
   }
 
   public void setPin(int pin) {
-    if (pin > 0 && pin < 10000 && pin > 999) {
+    if (pin < 0 && pin > 9999 && pin > 999) {
       System.out.println("no");
       return;
     }
     this.pin = pin;
+  }
+
+  public int getId() {
+    return id;
   }
 
   public double getDinero() {
@@ -35,5 +43,23 @@ public class Cuenta {
       return;
     }
     this.dinero = dinero;
+  }
+
+  // constructor
+  public Cuenta(String nombre, int pin, double dinero) {
+    cantidad_de_clientes++;
+    this.id = cantidad_de_clientes;
+    setNombre(nombre);
+    setPin(pin);
+    setDinero(dinero);
+  }
+
+  // toString
+  @Override
+  public String toString() {
+    String str = "id: " + this.id + "\n" +
+        "nombre: " + this.nombre + "\n" +
+        "dinero disponible: " + this.dinero;
+    return str;
   }
 }
