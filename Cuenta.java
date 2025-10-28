@@ -12,7 +12,7 @@ public class Cuenta {
   }
 
   public void setNombre(String nombre) {
-    if (nombre.isBlank()) {
+    if (nombre.isBlank() || nombre == null) {
       return;
     }
     this.nombre = nombre;
@@ -24,7 +24,7 @@ public class Cuenta {
 
   public void setPin(int pin) {
     if (pin < 0 && pin > 9999 && pin > 999) {
-      System.out.println("no");
+      System.out.println("pin debe ser 4 números");
       return;
     }
     this.pin = pin;
