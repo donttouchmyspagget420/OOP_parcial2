@@ -1,1 +1,1 @@
-Co[yright 2025 Amangeldiuly Madi(feat. Ramirez Lucas) 
+Copyright 2025 Amangeldiuly Madi(feat. Ramirez Lucas) 
