@@ -6,6 +6,48 @@ import javax.swing.JOptionPane;
 
 public class main {
 
+  private static Cuenta registrar(LinkedList<Cuenta> lista) {
+    Cuenta cuenta;
+    do {
+      String nombre = JOptionPane.showInputDialog("Como te llama?");
+      int pin = Integer.parseInt(JOptionPane.showInputDialog("Ingrese tu pin"));
+      double dinero = 0;
+
+      cuenta = new Cuenta(nombre, pin, dinero);
+    } while (!lista.add(cuenta));
+
+    JOptionPane.showMessageDialog(null, "Cuenta creado");
+    JOptionPane.showMessageDialog(null, cuenta.toString());
+
+    return cuenta;
+  }
+
+  private static Cuenta login(LinkedList<Cuenta> lista) {
+    Cuenta cuenta;
+    boolean bool = true;
+    String nombre;
+    int pin;
+
+    do {
+      nombre = JOptionPane.showInputDialog("Como te llama?");
+      for (Cuenta cuenta2 : lista) {
+        if (cuenta2.getNombre().equalsIgnoreCase(nombre)) {
+          bool = false;
+          cuenta = cuenta2;
+        }
+      }
+      if (!bool) {
+        JOptionPane.showMessageDialog(null, "Cuenta de " + nombre + " no existe");
+      }
+    } while (bool);
+
+    do {
+      pin = JOptionPane.showInputDialog(null, "Ingrese tu pin");
+    } while (!(cuenta.getPin() == pin));
+
+    return cuenta;
+  }
+
   private static void depositar(Cuenta cuenta) {
     double monto;
     do {
@@ -64,11 +106,5 @@ public class main {
   }
 
   public static void main(String[] args) {
-    LinkedList<Cuenta> lista = new LinkedList<>();
-    lista.add(new Cuenta("Madi", 6969, 100));
-    lista.add(new Cuenta("Bruh", 6969, 100));
-    lista.add(new Cuenta("Pablo", 6969, 100));
-
-    transferir(lista.getFirst(), lista);
   }
 }
