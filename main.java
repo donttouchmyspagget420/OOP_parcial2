@@ -1,5 +1,6 @@
 package bna;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
@@ -23,7 +24,7 @@ public class main {
   }
 
   private static Cuenta login(LinkedList<Cuenta> lista) {
-    Cuenta cuenta;
+    Cuenta cuenta = null;
     boolean bool = true;
     String nombre;
     int pin;
@@ -42,7 +43,7 @@ public class main {
     } while (bool);
 
     do {
-      pin = JOptionPane.showInputDialog(null, "Ingrese tu pin");
+      pin = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese tu pin"));
     } while (!(cuenta.getPin() == pin));
 
     return cuenta;
@@ -101,10 +102,48 @@ public class main {
     System.out.println(lista.get(choice));
   }
 
-  private enum OPCIONES {
-    depositar, retirar, transferir;
+  private static void eliminar(Cuenta cuenta, LinkedList<Cuenta> lista) {
+    for (int i = 0; i < lista.size(); i++) {
+      if (lista.get(i).getId() == cuenta.getId()) {
+        lista.remove(i);
+        break;
+      }
+
+    }
+    cuenta = null;
   }
 
   public static void main(String[] args) {
+    LinkedList<Cuenta> lista = new LinkedList<>();
+    Cuenta cuenta = null;
+    String[] opciones = { "depositar", "retirar", "transferir", "registrar", "login", "eliminar", "quitar" };
+    int eligo;
+    boolean corriendo = true;
+
+    JOptionPane.showMessageDialog(null, "Banco de la nacion Argentina");
+
+    do {
+      eligo = JOptionPane.showOptionDialog(null, (!(cuenta == null)) ? cuenta.toString() : "", "eliga un opcion",
+          JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
+          opciones[0]);
+
+      switch (eligo) {
+        case 3 -> cuenta = registrar(lista);
+        case 4 -> cuenta = login(lista);
+      }
+
+      if (!(cuenta == null)) {
+        switch (eligo) {
+          case 0 -> depositar(cuenta);
+          case 1 -> retirar(cuenta);
+          case 2 -> transferir(cuenta, lista);
+          case 5 -> eliminar(cuenta, lista);
+          case 6 -> corriendo = false;
+
+        }
+      } else {
+        JOptionPane.showMessageDialog(null, "no entraste a su cuenta");
+      }
+    } while (corriendo);
   }
 }
