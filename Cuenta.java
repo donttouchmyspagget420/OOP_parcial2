@@ -1,18 +1,20 @@
+import java.util.ArrayList;
 
 public class Cuenta {
 	private static int cantidad_de_clientes = 0;
 	private String nombre;
 	private int pin, id;
 	private double dinero;
+	private ArrayList<Boleta> historia;
 
 	// getters && setters
 	public String getNombre() {
 		return nombre;
 	}
 
-	public void setNombre(String nombre) {
+	public void setNombre(String nombre) throws Exception {
 		if (nombre.isBlank() || nombre == null) {
-			return;
+			throw new Exception("Ingrese tu nombre");
 		}
 		this.nombre = nombre;
 	}
@@ -21,10 +23,9 @@ public class Cuenta {
 		return pin;
 	}
 
-	public void setPin(int pin) {
+	public void setPin(int pin) throws Exception {
 		if (pin < 0 && pin > 9999 && pin > 999) {
-			System.out.println("pin debe ser 4 números");
-			return;
+			throw new Exception("pin debe ser 4 números");
 		}
 		this.pin = pin;
 	}
@@ -37,15 +38,23 @@ public class Cuenta {
 		return dinero;
 	}
 
-	public void setDinero(double dinero) {
+	public void setDinero(double dinero) throws Exception {
 		if (dinero <= 0) {
-			return;
+			throw new Exception("no podes tener balance menor a 0");
 		}
 		this.dinero = dinero;
 	}
 
+	public ArrayList<Boleta> getHistoria() {
+		return historia;
+	}
+
+	public void agregarBoleta(String remitente, String beneficario, double dinero) {
+		historia.add(new Boleta(remitente, beneficario, dinero));
+	}
+
 	// constructor
-	public Cuenta(String nombre, int pin, double dinero) {
+	public Cuenta(String nombre, int pin, double dinero) throws Exception {
 		cantidad_de_clientes++;
 		this.id = cantidad_de_clientes;
 		setNombre(nombre);

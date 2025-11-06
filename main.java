@@ -1,21 +1,42 @@
 import java.util.LinkedList;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
 public class main {
 
-	private static Cuenta registrar(LinkedList<Cuenta> lista) {
-		Cuenta cuenta;
+	private static void chequiar_pin(Cuenta cuenta) {
+		int pin = 0;
 		do {
-			String nombre = JOptionPane.showInputDialog("Como te llama?");
-			int pin = Integer.parseInt(JOptionPane.showInputDialog("Ingrese tu pin"));
-			double dinero = 0;
+			try {
+				pin = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese tu pin"));
+				if (pin < 0 || pin > 9999) {
+					throw new Exception();
+				}
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "pin no es correcto");
+			}
+		} while (!(cuenta.getPin() == pin));
+	}
 
-			cuenta = new Cuenta(nombre, pin, dinero);
-		} while (!lista.add(cuenta));
+	private static Cuenta registrar(LinkedList<Cuenta> lista) {
+		Cuenta cuenta = null;
+		do {
+			try {
 
-		JOptionPane.showMessageDialog(null, "Cuenta creado");
-		JOptionPane.showMessageDialog(null, cuenta.toString());
+				String nombre = JOptionPane.showInputDialog("Como te llama?");
+				int pin = Integer.parseInt(JOptionPane.showInputDialog("Ingrese tu pin"));
+				double dinero = 0;
+
+				cuenta = new Cuenta(nombre, pin, dinero);
+			} catch (Exception e) {
+				cuenta = null;
+				continue;
+			}
+		} while (cuenta == null);
+
+		JOptionPane.showMessageDialog(null, "Cuenta creado", "informacion", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, cuenta.toString(), "informacion", JOptionPane.INFORMATION_MESSAGE);
 
 		return cuenta;
 	}
@@ -24,7 +45,6 @@ public class main {
 		Cuenta cuenta = null;
 		boolean bool = true;
 		String nombre;
-		int pin;
 
 		do {
 			nombre = JOptionPane.showInputDialog("Como te llama?");
@@ -39,70 +59,78 @@ public class main {
 			}
 		} while (bool);
 
-		do {
-			pin = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese tu pin"));
-		} while (!(cuenta.getPin() == pin));
+		chequiar_pin(cuenta);
 
 		return cuenta;
 	}
 
 	private static void depositar(Cuenta cuenta) {
-		double monto;
+		chequiar_pin(cuenta);
+		double monto = 0;
 		do {
-			monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés depositar?"));
-			if (monto < 0) {
+			try {
+				monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés depositar?"));
+
+				cuenta.setDinero(cuenta.getDinero() + monto);
+			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "no se puede depositar " + monto, "error",
 						JOptionPane.WARNING_MESSAGE);
 			}
 		} while (monto <= 0);
-		cuenta.setDinero(cuenta.getDinero() + monto);
 	}
 
 	private static void retirar(Cuenta cuenta) {
-		double monto;
+		chequiar_pin(cuenta);
+		double monto = 0;
 		do {
-			monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés retirar?"));
-			if (monto > cuenta.getDinero()) {
-				JOptionPane.showMessageDialog(null, "no tenés sufficiente dinero", "error",
-						JOptionPane.WARNING_MESSAGE);
-			} else if (monto < 0) {
+			try {
+				monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés retirar?"));
+
+				cuenta.setDinero(cuenta.getDinero() - monto);
+			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "no se puede retirar " + monto, "error",
 						JOptionPane.WARNING_MESSAGE);
 			}
-		} while (monto > cuenta.getDinero() || monto < 0);
-		cuenta.setDinero(cuenta.getDinero() - monto);
+		} while (monto <= 0);
 	}
 
 	private static void transferir(Cuenta cuenta, LinkedList<Cuenta> lista) {
-		double dinero;
+		double monto = 0;
 		int choice;
 		do {
 			for (Cuenta c : lista) {
 				JOptionPane.showMessageDialog(null, c, "información", JOptionPane.INFORMATION_MESSAGE);
 			}
-			choice = Integer.valueOf(JOptionPane.showInputDialog("A quien querés transferir el dinero?"));
+			choice = Integer.valueOf(JOptionPane.showInputDialog(
+					"A quien querés transferir el dinero?(1-" + lista.size() + ")"));
 			if (choice < 0 || choice > lista.size()) {
 				JOptionPane.showMessageDialog(null, "no hay este usuario", "error",
 						JOptionPane.WARNING_MESSAGE);
 			}
 		} while (choice < 0 || choice > lista.size());
-		Cuenta cuenta2 = lista.get(choice + 1);
+		choice--;
 
 		do {
-			dinero = Double.valueOf(JOptionPane.showInputDialog("cuanto querés transferir?"));
-			if (dinero > cuenta.getDinero()) {
-				JOptionPane.showMessageDialog(null, "no tenés sufficiente dinero", "error",
-						JOptionPane.WARNING_MESSAGE);
-			} else if (dinero < 0) {
-				JOptionPane.showMessageDialog(null, "no se puede transferir " + dinero, "error",
+			try {
+				monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés retirar?"));
+
+				if (monto > cuenta.getDinero()) {
+					throw new Exception();
+				}
+
+				cuenta.setDinero(cuenta.getDinero() - monto);
+				lista.get(choice).setDinero(lista.get(choice).getDinero() + monto);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "no se puede retirar " + monto, "error",
 						JOptionPane.WARNING_MESSAGE);
 			}
-		} while (dinero > cuenta.getDinero() || dinero < 0);
+		} while (monto <= 0);
 
-		cuenta.setDinero(cuenta.getDinero() - dinero);
-		cuenta2.setDinero(cuenta2.getDinero() + dinero);
+		cuenta.agregarBoleta(cuenta.getNombre(), lista.get(choice).getNombre(), monto);
+		lista.get(choice).agregarBoleta(cuenta.getNombre(), lista.get(choice).getNombre(), monto);
 
-		System.out.println(lista.get(choice));
+		JOptionPane.showMessageDialog(null, cuenta, "", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, lista.get(choice), "", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	private static Cuenta eliminar(Cuenta cuenta, LinkedList<Cuenta> lista) {
@@ -116,39 +144,57 @@ public class main {
 		return null;
 	}
 
+	private static void historia(Cuenta cuenta) {
+		ArrayList<Boleta> historia = cuenta.getHistoria();
+
+		for (Boleta boleta : historia) {
+			JOptionPane.showMessageDialog(null, boleta, "!", JOptionPane.INFORMATION_MESSAGE);
+
+		}
+	}
+
 	public static void main(String[] args) {
 		LinkedList<Cuenta> lista = new LinkedList<>();
 		Cuenta cuenta = null;
-		String[] opciones = { "depositar", "retirar", "transferir", "registrar", "login", "eliminar",
+		String[] opciones = { "depositar", "retirar", "transferir", "Ver la historia", "crear nuevo cuenta",
+				"ingresar a cuenta",
+				"eliminar cuenta",
 				"quitar" };
 		int eligo;
 		boolean corriendo = true;
 
-		JOptionPane.showMessageDialog(null, "Banco de la nacion Argentina");
+		JOptionPane.showMessageDialog(null, "Banco de la nacion Argentina", "bna",
+				JOptionPane.INFORMATION_MESSAGE);
 
 		do {
+			if (cuenta != null) {
+				opciones[4] = "cambiar cuenta";
+			} else {
+				opciones[4] = "ingresar a cuenta";
+			}
+
 			eligo = JOptionPane.showOptionDialog(null, (!(cuenta == null)) ? cuenta.toString() : "",
 					"eliga un opcion",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
 					opciones[0]);
 
+			if (cuenta == null && eligo <= 3) {
+				JOptionPane.showMessageDialog(null, "no entraste a su cuenta", "!",
+						JOptionPane.WARNING_MESSAGE);
+				continue;
+			}
+
 			switch (eligo) {
-				case 3 -> cuenta = registrar(lista);
-				case 4 -> cuenta = login(lista);
+				case 0 -> depositar(cuenta);
+				case 1 -> retirar(cuenta);
+				case 2 -> transferir(cuenta, lista);
+				case 3 -> historia(cuenta);
+				case 4 -> cuenta = registrar(lista);
+				case 5 -> cuenta = login(lista);
+				case 6 -> cuenta = eliminar(cuenta, lista);
+				case 7 -> corriendo = false;
 			}
 
-			if (!(cuenta == null)) {
-				switch (eligo) {
-					case 0 -> depositar(cuenta);
-					case 1 -> retirar(cuenta);
-					case 2 -> transferir(cuenta, lista);
-					case 5 -> cuenta = eliminar(cuenta, lista);
-					case 6 -> corriendo = false;
-
-				}
-			} else {
-				JOptionPane.showMessageDialog(null, "no entraste a su cuenta");
-			}
 		} while (corriendo);
 	}
 }
