@@ -30,7 +30,7 @@ public class Cuenta {
 
  public void setPin(int pin) throws Exception {
   if (pin < 0 || pin > 9999 || pin <= 999) {
-   throw new Exception("pin debe ser 4 números");
+   throw new Exception("El pin DEBE ser 4 números");
   }
   this.pin = pin;
  }
@@ -54,8 +54,8 @@ public class Cuenta {
   return historia;
  }
 
- public void agregarBoleta(String remitente, String beneficario, double dinero) {
-  historia.add(new Boleta(remitente, beneficario, dinero));
+ public void agregarBoleta(String remitente, String beneficiario, double dinero) {
+  historia.add(new Boleta(remitente, beneficiario, dinero));
  }
 
  // constructor
