@@ -9,19 +9,19 @@ public class main {
     int pin = 0;
     do {
       try {
-        pin = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese tu pin"));
+        pin = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese su pin"));
         if (pin < 0 || pin > 9999 || pin <= 999) {
           throw new Exception();
         }
       } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "pin no es correcto");
+        JOptionPane.showMessageDialog(null, "su pin no es correcto");
       }
     } while (!(cuenta.getPin() == pin));
   }
 
   private static Cuenta registrar(LinkedList<Cuenta> lista, Cuenta cuenta) {
     if (cuenta != null) {
-      int eliminar = JOptionPane.showConfirmDialog(null, "Queres eliminar cuenta pasada?", "?",
+      int eliminar = JOptionPane.showConfirmDialog(null, "Queres eliminar tu cuenta vieja?", "?",
           JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (eliminar == 1) {
         cuenta = eliminar(cuenta, lista);
@@ -30,8 +30,8 @@ public class main {
     do {
       try {
 
-        String nombre = JOptionPane.showInputDialog("Como te llama?");
-        int pin = Integer.parseInt(JOptionPane.showInputDialog("Ingrese tu pin"));
+        String nombre = JOptionPane.showInputDialog("Como te llamas?");
+        int pin = Integer.parseInt(JOptionPane.showInputDialog("Ingrese su pin"));
         double dinero = 0;
 
         cuenta = new Cuenta(nombre, pin, dinero);
@@ -41,7 +41,7 @@ public class main {
       }
     } while (cuenta == null);
 
-    JOptionPane.showMessageDialog(null, "Cuenta creado", "informacion", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(null, "Cuenta creada exitosamente", "informacion", JOptionPane.INFORMATION_MESSAGE);
     JOptionPane.showMessageDialog(null, cuenta.toString(), "informacion", JOptionPane.INFORMATION_MESSAGE);
 
     lista.add(cuenta);
@@ -54,7 +54,7 @@ public class main {
           JOptionPane.WARNING_MESSAGE);
       return cuenta;
     } else if (cuenta != null) {
-      int eliminar = JOptionPane.showConfirmDialog(null, "Queres eliminar cuenta pasada?", "?",
+      int eliminar = JOptionPane.showConfirmDialog(null, "Queres eliminar tu cuenta vieja?", "?",
           JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
       if (eliminar == 1) {
         cuenta = eliminar(cuenta, lista);
@@ -64,7 +64,7 @@ public class main {
     String nombre;
 
     do {
-      nombre = JOptionPane.showInputDialog("Como te llama?");
+      nombre = JOptionPane.showInputDialog("Como te llamas?");
       for (Cuenta cuenta2 : lista) {
         if (cuenta2.getNombre().equalsIgnoreCase(nombre)) {
           bool = false;
@@ -126,7 +126,7 @@ public class main {
       choice = Integer.valueOf(JOptionPane.showInputDialog(
           "A quien querés transferir el dinero?(1-" + lista.size() + ")"));
       if (choice < 0 || choice > lista.size()) {
-        JOptionPane.showMessageDialog(null, "no hay este usuario", "error",
+        JOptionPane.showMessageDialog(null, "Este usuario no existe", "error",
             JOptionPane.WARNING_MESSAGE);
       }
     } while (choice < 0 || choice > lista.size());
@@ -180,10 +180,10 @@ public class main {
   public static void main(String[] args) {
     Cuenta cuenta = null;
     String[] opciones = { "depositar", "retirar", "transferir", "Ver la historia", "eliminar cuenta",
-        "crear nuevo cuenta",
-        "ingresar a cuenta",
+        "crear nueva cuenta",
+        "ingresar a tu cuenta",
         "quitar" };
-    int eligo;
+    int opcion;
     boolean corriendo = true;
 
     JOptionPane.showMessageDialog(null, "Banco de la nacion Argentina", "bna",
@@ -193,21 +193,21 @@ public class main {
       if (cuenta != null) {
         opciones[6] = "cambiar cuenta";
       } else {
-        opciones[6] = "ingresar a cuenta";
+        opciones[6] = "ingresar a tu cuenta";
       }
 
-      eligo = JOptionPane.showOptionDialog(null, (!(cuenta == null)) ? cuenta.toString() : "",
+      opcion = JOptionPane.showOptionDialog(null, (!(cuenta == null)) ? cuenta.toString() : "",
           "eliga un opcion",
           JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
           opciones[0]);
 
-      if (cuenta == null && eligo <= 4) {
-        JOptionPane.showMessageDialog(null, "no entraste a su cuenta", "!",
+      if (cuenta == null && opcion <= 4) {
+        JOptionPane.showMessageDialog(null, "no lograste ingresar a la cuenta", "!",
             JOptionPane.WARNING_MESSAGE);
         continue;
       }
 
-      switch (eligo) {
+      switch (opcion) {
         case 0 -> depositar(cuenta);
         case 1 -> retirar(cuenta);
         case 2 -> transferir(cuenta, Cuenta.getLista());
