@@ -2,13 +2,13 @@ import java.time.LocalDate;
 
 public class Boleta {
 
- private String remitente, beneficario;
+ private String remitente, beneficiario;
  private double dinero;
  private LocalDate fecha;
 
- public Boleta(String remitente, String beneficario, double dinero) {
+ public Boleta(String remitente, String beneficiario, double dinero) {
   this.remitente = remitente;
-  this.beneficario = beneficario;
+  this.beneficiario = beneficiario;
   this.dinero = dinero;
   this.fecha = LocalDate.now();
  }
@@ -16,7 +16,7 @@ public class Boleta {
  @Override
  public String toString() {
   return "reminente: " + remitente + "\n" +
-    "beneficario: " + beneficario + "\n" +
+    "beneficario: " + beneficiario + "\n" +
     "dinero: " + dinero + "\n" +
     "fecha: " + fecha + "\n";
  }
