@@ -23,7 +23,7 @@ public class Movimiento extends Boleta {
     }
   }
 
-  Cuenta registrar(LinkedList<Cuenta> lista, Cuenta cuenta) {
+  static void registrar(LinkedList<Cuenta> lista) {
     do {
       try {
 
@@ -31,25 +31,24 @@ public class Movimiento extends Boleta {
         int pin = Integer.parseInt(JOptionPane.showInputDialog("Ingrese su pin"));
         double dinero = 0;
 
-        cuenta = new Cuenta(lista.size(), nombre, pin, dinero);
+        Cuenta.setActivo(new Cuenta(lista.size(), nombre, pin, dinero));
       } catch (Exception e) {
-        cuenta = null;
+        Cuenta.setActivo(null);
         continue;
       }
-    } while (cuenta == null);
+    } while (Cuenta.getActivo() == null);
 
     JOptionPane.showMessageDialog(null, "Cuenta creada exitosamente", "informacion", JOptionPane.INFORMATION_MESSAGE);
-    JOptionPane.showMessageDialog(null, cuenta.toString(), "informacion", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(null, Cuenta.getActivo().toString(), "informacion", JOptionPane.INFORMATION_MESSAGE);
 
-    lista.add(cuenta);
-    return cuenta;
+    lista.add(Cuenta.getActivo());
   }
 
-  Cuenta login(LinkedList<Cuenta> lista, Cuenta cuenta) {
-    if (lista.size() <= 1 && cuenta != null) {
+  static void login(LinkedList<Cuenta> lista) {
+    if (lista.size() <= 1 && Cuenta.getActivo() != null) {
       JOptionPane.showMessageDialog(null, "no hay cuentas disponibles", "!",
           JOptionPane.WARNING_MESSAGE);
-      return cuenta;
+      return;
     }
     boolean corriendo = true;
     int id = -1;
@@ -75,46 +74,46 @@ public class Movimiento extends Boleta {
 
     lista.get(id).chequiar_pin();
 
-    return lista.get(id);
+    Cuenta.setActivo(lista.get(id));
   }
 
-  void depositar(Cuenta cuenta) throws Exception {
-    cuenta.chequiar_pin();
+  static void depositar() throws Exception {
+    Cuenta.getActivo().chequiar_pin();
     double monto = 0;
     do {
       try {
         monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés depositar?"));
 
-        cuenta.setDinero(cuenta.getDinero() + monto);
+        Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() + monto);
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "no se puede depositar " + monto, "error",
             JOptionPane.WARNING_MESSAGE);
       }
     } while (monto <= 0);
 
-    Movimiento movimiento = new Movimiento(Funciones.DEPOSITAR, cuenta, monto);
-    cuenta.agregarHistoria(movimiento.toString());
+    Movimiento movimiento = new Movimiento(Funciones.DEPOSITAR, Cuenta.getActivo(), monto);
+    Cuenta.getActivo().agregarHistoria(movimiento.toString());
   }
 
-  void retirar(Cuenta cuenta) throws Exception {
-    cuenta.chequiar_pin();
+  static void retirar() throws Exception {
+    Cuenta.getActivo().chequiar_pin();
     double monto = 0;
     do {
       try {
         monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés transferir?"));
 
-        cuenta.setDinero(cuenta.getDinero() - monto);
+        Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() - monto);
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "no se puede transferir " + monto, "error",
             JOptionPane.WARNING_MESSAGE);
       }
     } while (monto <= 0);
 
-    Movimiento movimiento = new Movimiento(Funciones.RETIRAR, cuenta, monto);
-    cuenta.agregarHistoria(movimiento.toString());
+    Movimiento movimiento = new Movimiento(Funciones.RETIRAR, Cuenta.getActivo(), monto);
+    Cuenta.getActivo().agregarHistoria(movimiento.toString());
   }
 
-  void transferir(Cuenta cuenta, LinkedList<Cuenta> lista) throws Exception {
+  static void transferir(LinkedList<Cuenta> lista) throws Exception {
     if (lista.size() < 2) {
       JOptionPane.showMessageDialog(null, "no hay cuentas disponibles", "!",
           JOptionPane.WARNING_MESSAGE);
@@ -139,11 +138,11 @@ public class Movimiento extends Boleta {
       try {
         monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés transferir?"));
 
-        if (monto > cuenta.getDinero()) {
+        if (monto > Cuenta.getActivo().getDinero()) {
           throw new Exception();
         }
 
-        cuenta.setDinero(cuenta.getDinero() - monto);
+        Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() - monto);
         lista.get(choice).setDinero(lista.get(choice).getDinero() + monto);
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "no se puede tranferir " + monto, "error",
@@ -151,18 +150,18 @@ public class Movimiento extends Boleta {
       }
     } while (monto <= 0);
 
-    Movimiento movimiento = new Movimiento(Funciones.TRANSFERIR, cuenta, lista.get(choice), monto);
-    cuenta.agregarHistoria(movimiento.toString());
+    Movimiento movimiento = new Movimiento(Funciones.TRANSFERIR, Cuenta.getActivo(), lista.get(choice), monto);
+    Cuenta.getActivo().agregarHistoria(movimiento.toString());
     lista.get(choice).agregarHistoria(movimiento.toString());
 
-    JOptionPane.showMessageDialog(null, cuenta, "", JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(null, Cuenta.getActivo(), "", JOptionPane.INFORMATION_MESSAGE);
     JOptionPane.showMessageDialog(null, lista.get(choice), "", JOptionPane.INFORMATION_MESSAGE);
   }
 
-  Cuenta eliminar(LinkedList<Cuenta> lista, Cuenta cuenta) {
-    cuenta.chequiar_pin();
+  static Cuenta eliminar(LinkedList<Cuenta> lista) {
+    Cuenta.getActivo().chequiar_pin();
     for (int i = 0; i < lista.size(); i++) {
-      if (lista.get(i).getId() == cuenta.getId()) {
+      if (lista.get(i).getId() == Cuenta.getActivo().getId()) {
         lista.remove(i);
         break;
       }
@@ -170,8 +169,8 @@ public class Movimiento extends Boleta {
     return null;
   }
 
-  void cambiarContrasenia(Cuenta cuenta) {
-    cuenta.chequiar_pin();
+  static void cambiarContrasenia() {
+    Cuenta.getActivo().chequiar_pin();
     int pin = 0;
     do {
       try {
@@ -198,13 +197,17 @@ public class Movimiento extends Boleta {
     this.funcion = func;
   }
 
-  void historia(Cuenta cuenta) {
-    cuenta.chequiar_pin();
-    ArrayList<String> historia = cuenta.getHistoria();
+  static void historia() {
+    Cuenta.getActivo().chequiar_pin();
+    ArrayList<String> historia = Cuenta.getActivo().getHistoria();
 
     for (String boleta : historia) {
       JOptionPane.showMessageDialog(null, boleta, "!", JOptionPane.INFORMATION_MESSAGE);
     }
+  }
+
+  static boolean quitar() {
+    return false;
   }
 
 }

@@ -7,45 +7,49 @@ import javax.swing.JOptionPane;
 
 public class main {
 
-  public static void main(String[] args) {
-    Cuenta cuenta = null;
-    String[] opciones = { "depositar", "retirar", "transferir", "Ver la historia", "eliminar cuenta",
-        "crear nueva cuenta",
-        "ingresar a tu cuenta",
-        "quitar" };
+  public static void main(String[] args) throws Exception {
+    LinkedList<Cuenta> lista = new LinkedList<>();
+    Movimiento.Funciones[] funciones = Movimiento.Funciones.values();
+    String[] opciones = new String[funciones.length];
     int opcion;
     boolean corriendo = true;
 
     JOptionPane.showMessageDialog(null, "Banco de la nacion Argentina", "bna",
         JOptionPane.INFORMATION_MESSAGE);
 
+    for (int i = 0; i < opciones.length; i++) {
+      opciones[i] = funciones[i].getFuncion();
+    }
+
     do {
-      if (cuenta != null) {
-        opciones[6] = "cambiar cuenta";
+      if (Cuenta.getActivo() != null) {
+        opciones[1] = "cambiar cuenta";
       } else {
-        opciones[6] = "ingresar a tu cuenta";
+        opciones[1] = "ingresar a tu cuenta";
       }
 
-      opcion = JOptionPane.showOptionDialog(null, (!(cuenta == null)) ? cuenta.toString() : "",
+      opcion = JOptionPane.showOptionDialog(null, (!(Cuenta.getActivo() == null)) ? Cuenta.getActivo().toString() : "",
           "eliga un opcion",
           JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
           opciones[0]);
 
-      if (cuenta == null && opcion <= 4) {
+      if (Cuenta.getActivo() == null && opcion >= 2) {
         JOptionPane.showMessageDialog(null, "no lograste ingresar a la cuenta", "!",
             JOptionPane.WARNING_MESSAGE);
         continue;
       }
 
+      Movimiento.registrar(lista);
+
       switch (opcion) {
-        case 0 -> depositar(cuenta);
-        case 1 -> retirar(cuenta);
-        case 2 -> transferir(cuenta, Cuenta.getLista());
-        case 3 -> historia(cuenta);
-        case 4 -> cuenta = eliminar(cuenta, Cuenta.getLista());
-        case 5 -> cuenta = registrar(Cuenta.getLista(), cuenta);
-        case 6 -> cuenta = login(Cuenta.getLista(), cuenta);
-        case 7 -> corriendo = false;
+        case 0 -> Movimiento.registrar(lista);
+        case 1 -> Movimiento.login(lista);
+        case 2 -> Movimiento.cambiarContrasenia();
+        case 3 -> Movimiento.depositar();
+        case 4 -> Movimiento.retirar();
+        case 5 -> Movimiento.transferir(lista);
+        case 6 -> Movimiento.historia();
+        case 7 -> corriendo = Movimiento.quitar();
       }
 
     } while (corriendo);
