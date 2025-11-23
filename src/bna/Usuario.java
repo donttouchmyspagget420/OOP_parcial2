@@ -9,7 +9,7 @@ abstract class Usuario {
 
   private int pin, id;
   private double dinero;
-  private ArrayList<String> historia;
+  private ArrayList<String> historia = new ArrayList<>();
 
   // getters && setters
 

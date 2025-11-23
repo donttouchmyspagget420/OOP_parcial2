@@ -1,7 +1,6 @@
 package bna;
 
 import java.util.LinkedList;
-import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -16,6 +15,8 @@ public class main {
 
     JOptionPane.showMessageDialog(null, "Banco de la nacion Argentina", "bna",
         JOptionPane.INFORMATION_MESSAGE);
+
+    Movimiento.registrar(lista);
 
     for (int i = 0; i < opciones.length; i++) {
       opciones[i] = funciones[i].getFuncion();
@@ -33,13 +34,11 @@ public class main {
           JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
           opciones[0]);
 
-      if (Cuenta.getActivo() == null && opcion >= 2) {
+      if (Cuenta.getActivo() == null && (opcion >= 1 && opcion != 8)) {
         JOptionPane.showMessageDialog(null, "no lograste ingresar a la cuenta", "!",
             JOptionPane.WARNING_MESSAGE);
         continue;
       }
-
-      Movimiento.registrar(lista);
 
       switch (opcion) {
         case 0 -> Movimiento.registrar(lista);
@@ -49,7 +48,8 @@ public class main {
         case 4 -> Movimiento.retirar();
         case 5 -> Movimiento.transferir(lista);
         case 6 -> Movimiento.historia();
-        case 7 -> corriendo = Movimiento.quitar();
+        case 7 -> Movimiento.eliminar(lista);
+        case 8 -> corriendo = Movimiento.quitar();
       }
 
     } while (corriendo);

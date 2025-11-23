@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class Movimiento extends Boleta {
-  private Funciones funcion;
+  private String funcion;
 
   public static enum Funciones {
     REGISTRAR("crear nueva cuenta"), LOGIN("cambiar cuenta"), CAMBIAR_CONTRASENIA("cambiar la contrasenia"),
     DEPOSITAR("depositar dinero"), RETIRAR("retirar dinero"), TRANSFERIR("transferir dinero a otra cuenta"),
-    HISTORIA("ver la historia"), QUITAR("quitar");
+    HISTORIA("ver la historia"), ELIMINAR("eliminar la cuenta"), QUITAR("quitar");
 
     private String descripcion;
 
@@ -56,7 +56,7 @@ public class Movimiento extends Boleta {
 
     while (corriendo) {
       try {
-        id = Integer.parseInt(JOptionPane.showInputDialog("cual es tu id?"));
+        id = Integer.parseInt(JOptionPane.showInputDialog("cual es tu id?")) - 1;
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "esta id no existe", "!", JOptionPane.WARNING_MESSAGE);
         continue;
@@ -100,11 +100,11 @@ public class Movimiento extends Boleta {
     double monto = 0;
     do {
       try {
-        monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés transferir?"));
+        monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés retirar?"));
 
         Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() - monto);
       } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "no se puede transferir " + monto, "error",
+        JOptionPane.showMessageDialog(null, "no se puede retirar " + monto, "error",
             JOptionPane.WARNING_MESSAGE);
       }
     } while (monto <= 0);
@@ -158,7 +158,7 @@ public class Movimiento extends Boleta {
     JOptionPane.showMessageDialog(null, lista.get(choice), "", JOptionPane.INFORMATION_MESSAGE);
   }
 
-  static Cuenta eliminar(LinkedList<Cuenta> lista) {
+  static void eliminar(LinkedList<Cuenta> lista) {
     Cuenta.getActivo().chequiar_pin();
     for (int i = 0; i < lista.size(); i++) {
       if (lista.get(i).getId() == Cuenta.getActivo().getId()) {
@@ -166,7 +166,7 @@ public class Movimiento extends Boleta {
         break;
       }
     }
-    return null;
+    Cuenta.setActivo(null);
   }
 
   static void cambiarContrasenia() {
@@ -186,7 +186,7 @@ public class Movimiento extends Boleta {
     setBeneficiario(cuenta.getNombre());
     setDinero(dinero);
     setFecha();
-    this.funcion = func;
+    this.funcion = func.getFuncion();
   }
 
   private Movimiento(Funciones func, Cuenta remitente, Cuenta beneficiario, double dinero) throws Exception {
@@ -194,7 +194,7 @@ public class Movimiento extends Boleta {
     setBeneficiario(beneficiario.getNombre());
     setDinero(dinero);
     setFecha();
-    this.funcion = func;
+    this.funcion = func.getFuncion();
   }
 
   static void historia() {
@@ -208,6 +208,15 @@ public class Movimiento extends Boleta {
 
   static boolean quitar() {
     return false;
+  }
+
+  @Override
+  public String toString() {
+    return "remitente: " + getRemitente() + "\n" +
+        "beneficiario: " + getBeneficiario() + "\n" +
+        "dinero: " + getDinero() + "\n" +
+        "fecha: " + getFecha() + "\n" +
+        "accion: " + funcion + "\n";
   }
 
 }

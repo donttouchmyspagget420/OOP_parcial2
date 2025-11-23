@@ -34,12 +34,20 @@ abstract class Boleta {
     this.fecha = LocalDate.now();
   }
 
-  @Override
-  public String toString() {
-    return "remitente: " + remitente + "\n" +
-        "beneficiario: " + beneficiario + "\n" +
-        "dinero: " + dinero + "\n" +
-        "fecha: " + fecha + "\n";
+  public String getRemitente() {
+    return remitente;
+  }
+
+  public String getBeneficiario() {
+    return beneficiario;
+  }
+
+  public double getDinero() {
+    return dinero;
+  }
+
+  public LocalDate getFecha() {
+    return fecha;
   }
 
 }
