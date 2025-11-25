@@ -8,13 +8,13 @@ public class Movimiento extends Boleta {
   private String funcion;
 
   public static enum Funciones {
-    REGISTRAR("crear una cuenta nueva"),
-    LOGIN("cambiar de cuenta"),
+    REGISTRAR("crear cuenta"),
+    LOGIN("cambiar cuenta"),
     CAMBIAR_CONTRASENIA("cambiar la contraseña"),
-    DEPOSITAR("depositar dinero"),
-    RETIRAR("retirar dinero"),
-    TRANSFERIR("transferir dinero a otra cuenta"),
-    HISTORIA("ver el historial"),
+    DEPOSITAR("depositar"),
+    RETIRAR("retirar"),
+    TRANSFERIR("transferir"),
+    HISTORIA("historial"),
     ELIMINAR("eliminar la cuenta"),
     APLICAR_INTERES("aplicar interés mensual"),
     INVERSION_PLAZO_FIJO("inversión a plazo fijo"),
