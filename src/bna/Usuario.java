@@ -27,7 +27,7 @@ abstract class Usuario {
 
   public void setNombre(String nombre) throws Exception {
     if (nombre.isBlank() || nombre == null) {
-      throw new Exception("Ingrese tu nombre");
+      throw new Exception("Ingrese su nombre");
     }
     this.nombre = nombre;
   }
@@ -38,7 +38,7 @@ abstract class Usuario {
 
   public void setPin(int pin) throws Exception {
     if (pin < 0 || pin > 9999 || pin <= 999) {
-      throw new Exception("El pin DEBE ser 4 números");
+      throw new Exception("El pin TIENE que ser 4 números");
     }
     this.pin = pin;
   }
@@ -71,7 +71,7 @@ abstract class Usuario {
           throw new Exception();
         }
       } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "su pin no es correcto");
+        JOptionPane.showMessageDialog(null, "su pin es incorrecto");
       }
     } while (!(this.pin == pin));
   }
