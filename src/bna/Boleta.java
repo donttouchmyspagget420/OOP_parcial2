@@ -11,7 +11,7 @@ abstract class Boleta {
   // getters && setters
   public void setRemitente(String remitente) throws Exception {
     if (remitente.isBlank()) {
-      throw new Exception("no puede ser vacio");
+      throw new Exception("no puede estar vacio");
     }
     this.remitente = remitente;
   }
