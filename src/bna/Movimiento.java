@@ -9,16 +9,16 @@ public class Movimiento extends Boleta {
 
   public static enum Funciones {
     REGISTRAR("crear una cuenta nueva"),
-    LOGIN("cambiar de cuenta"), 	
+    LOGIN("cambiar de cuenta"),
     CAMBIAR_CONTRASENIA("cambiar la contraseña"),
-    DEPOSITAR("depositar dinero"), 
-    RETIRAR("retirar dinero"), 
+    DEPOSITAR("depositar dinero"),
+    RETIRAR("retirar dinero"),
     TRANSFERIR("transferir dinero a otra cuenta"),
-    HISTORIA("ver el historial"), 
-    ELIMINAR("eliminar la cuenta"), 
+    HISTORIA("ver el historial"),
+    ELIMINAR("eliminar la cuenta"),
     APLICAR_INTERES("aplicar interés mensual"),
     INVERSION_PLAZO_FIJO("inversión a plazo fijo"),
-    QUITAR("salir");
+    SALIR("salir");
 
     private String descripcion;
 
@@ -191,59 +191,59 @@ public class Movimiento extends Boleta {
 
   static void aplicarInteresMensual() {
     Cuenta.getActivo().chequiar_pin();
-    
+
     try {
-        double tasa = Double.parseDouble(JOptionPane.showInputDialog("Ingrese tasa de interés (%):"));
-        double interes = Cuenta.getActivo().getDinero() * tasa / 100;
-        double nuevoSaldo = Cuenta.getActivo().getDinero() + interes;
-        
-        Cuenta.getActivo().setDinero(nuevoSaldo);
-        Cuenta.getActivo().agregarHistoria("Interés mensual " + tasa + "%: +" + interes);
-        
-        JOptionPane.showMessageDialog(null, 
-            "Interés mensual aplicado: " + interes + "\nNuevo saldo: " + nuevoSaldo, 
-            "Interés Aplicado", JOptionPane.INFORMATION_MESSAGE);
+      double tasa = Double.parseDouble(JOptionPane.showInputDialog("Ingrese tasa de interés (%):"));
+      double interes = Cuenta.getActivo().getDinero() * tasa / 100;
+      double nuevoSaldo = Cuenta.getActivo().getDinero() + interes;
+
+      Cuenta.getActivo().setDinero(nuevoSaldo);
+      Cuenta.getActivo().agregarHistoria("Interés mensual " + tasa + "%: +" + interes);
+
+      JOptionPane.showMessageDialog(null,
+          "Interés mensual aplicado: " + interes + "\nNuevo saldo: " + nuevoSaldo,
+          "Interés Aplicado", JOptionPane.INFORMATION_MESSAGE);
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, 
-            "Error al aplicar interés", 
-            "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null,
+          "Error al aplicar interés",
+          "Error", JOptionPane.ERROR_MESSAGE);
     }
   }
 
   static void inversionPlazoFijo() {
     Cuenta.getActivo().chequiar_pin();
-    
+
     try {
-        String montoStr = JOptionPane.showInputDialog("Ingrese el monto a invertir:");
-        String mesesStr = JOptionPane.showInputDialog("Ingrese los meses de la inversión:");
-        String rendimientoStr = JOptionPane.showInputDialog("Ingrese rendimiento anual (%):");
-        
-        if (montoStr != null && mesesStr != null && rendimientoStr != null) {
-            double monto = Double.parseDouble(montoStr);
-            int meses = Integer.parseInt(mesesStr);
-            double rendimiento = Double.parseDouble(rendimientoStr);
-            
-            if (monto > 0 && monto <= Cuenta.getActivo().getDinero() && meses > 0) {
-                double ganancia = monto * (rendimiento * meses / 12) / 100;
-                double nuevoSaldo = Cuenta.getActivo().getDinero() + ganancia;
-                
-                Cuenta.getActivo().setDinero(nuevoSaldo);
-                Cuenta.getActivo().agregarHistoria("Inversión " + meses + " meses: +" + ganancia);
-                
-                JOptionPane.showMessageDialog(null, 
-                    "Inversión realizada exitosamente\nGanancia: " + ganancia + 
-                    "\nNuevo saldo: " + nuevoSaldo, 
-                    "Inversión Exitosa", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, 
-                    "Monto inválido o fondos insuficientes", 
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            }
+      String montoStr = JOptionPane.showInputDialog("Ingrese el monto a invertir:");
+      String mesesStr = JOptionPane.showInputDialog("Ingrese los meses de la inversión:");
+      String rendimientoStr = JOptionPane.showInputDialog("Ingrese rendimiento anual (%):");
+
+      if (montoStr != null && mesesStr != null && rendimientoStr != null) {
+        double monto = Double.parseDouble(montoStr);
+        int meses = Integer.parseInt(mesesStr);
+        double rendimiento = Double.parseDouble(rendimientoStr);
+
+        if (monto > 0 && monto <= Cuenta.getActivo().getDinero() && meses > 0) {
+          double ganancia = monto * (rendimiento * meses / 12) / 100;
+          double nuevoSaldo = Cuenta.getActivo().getDinero() + ganancia;
+
+          Cuenta.getActivo().setDinero(nuevoSaldo);
+          Cuenta.getActivo().agregarHistoria("Inversión " + meses + " meses: +" + ganancia);
+
+          JOptionPane.showMessageDialog(null,
+              "Inversión realizada exitosamente\nGanancia: " + ganancia +
+                  "\nNuevo saldo: " + nuevoSaldo,
+              "Inversión Exitosa", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+          JOptionPane.showMessageDialog(null,
+              "Monto inválido o fondos insuficientes",
+              "Error", JOptionPane.ERROR_MESSAGE);
         }
+      }
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, 
-            "Error en la inversión", 
-            "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null,
+          "Error en la inversión",
+          "Error", JOptionPane.ERROR_MESSAGE);
     }
   }
 
