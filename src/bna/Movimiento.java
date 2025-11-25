@@ -8,9 +8,9 @@ public class Movimiento extends Boleta {
   private String funcion;
 
   public static enum Funciones {
-    REGISTRAR("crear nueva cuenta"), LOGIN("cambiar cuenta"), CAMBIAR_CONTRASENIA("cambiar la contrasenia"),
+    REGISTRAR("crear una cuenta nueva"), LOGIN("cambiar de cuenta"), CAMBIAR_CONTRASENIA("cambiar la contraseña"),
     DEPOSITAR("depositar dinero"), RETIRAR("retirar dinero"), TRANSFERIR("transferir dinero a otra cuenta"),
-    HISTORIA("ver la historia"), ELIMINAR("eliminar la cuenta"), QUITAR("quitar");
+    HISTORIA("ver el historial"), ELIMINAR("eliminar la cuenta"), QUITAR("salir");
 
     private String descripcion;
 
@@ -27,7 +27,7 @@ public class Movimiento extends Boleta {
     do {
       try {
 
-        String nombre = JOptionPane.showInputDialog("Como te llamas?");
+        String nombre = JOptionPane.showInputDialog("Como es tu nombre?");
         int pin = Integer.parseInt(JOptionPane.showInputDialog("Ingrese su pin"));
         double dinero = 0;
 
@@ -58,7 +58,7 @@ public class Movimiento extends Boleta {
       try {
         id = Integer.parseInt(JOptionPane.showInputDialog("cual es tu id?")) - 1;
       } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "esta id no existe", "!", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(null, "ese ID no existe", "!", JOptionPane.WARNING_MESSAGE);
         continue;
       }
       corriendo = false;
@@ -66,7 +66,7 @@ public class Movimiento extends Boleta {
     corriendo = true;
 
     while (corriendo) {
-      nombre = JOptionPane.showInputDialog("como te llama?");
+      nombre = JOptionPane.showInputDialog("como te llamas?");
       if (lista.get(id).getNombre().equalsIgnoreCase(nombre)) {
         corriendo = false;
       }
@@ -82,7 +82,7 @@ public class Movimiento extends Boleta {
     double monto = 0;
     do {
       try {
-        monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés depositar?"));
+        monto = Double.valueOf(JOptionPane.showInputDialog("cuanto quieres depositar?"));
 
         Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() + monto);
       } catch (Exception e) {
@@ -100,7 +100,7 @@ public class Movimiento extends Boleta {
     double monto = 0;
     do {
       try {
-        monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés retirar?"));
+        monto = Double.valueOf(JOptionPane.showInputDialog("cuanto queres retirar?"));
 
         Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() - monto);
       } catch (Exception e) {
@@ -126,7 +126,7 @@ public class Movimiento extends Boleta {
         JOptionPane.showMessageDialog(null, c, "información", JOptionPane.INFORMATION_MESSAGE);
       }
       choice = Integer.valueOf(JOptionPane.showInputDialog(
-          "A quien querés transferir el dinero?(1-" + lista.size() + ")"));
+          "A quien queres transferir el dinero?(1-" + lista.size() + ")"));
       if (choice < 0 || choice > lista.size()) {
         JOptionPane.showMessageDialog(null, "Este usuario no existe", "error",
             JOptionPane.WARNING_MESSAGE);
@@ -136,7 +136,7 @@ public class Movimiento extends Boleta {
 
     do {
       try {
-        monto = Double.valueOf(JOptionPane.showInputDialog("cuanto querés transferir?"));
+        monto = Double.valueOf(JOptionPane.showInputDialog("cuanto queres transferir?"));
 
         if (monto > Cuenta.getActivo().getDinero()) {
           throw new Exception();
@@ -174,9 +174,9 @@ public class Movimiento extends Boleta {
     int pin = 0;
     do {
       try {
-        pin = Integer.parseInt(JOptionPane.showInputDialog("Ingrese tu nueve pin"));
+        pin = Integer.parseInt(JOptionPane.showInputDialog("Ingrese su nuevo pin"));
       } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, "pin tiene que ser 4 numeros", "!", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(null, "su pin TIENE que ser 4 numeros", "!", JOptionPane.WARNING_MESSAGE);
       }
     } while (pin < 0 || pin > 9999 || pin <= 999);
   }
