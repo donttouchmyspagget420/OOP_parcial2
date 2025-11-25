@@ -30,11 +30,11 @@ public class main {
       }
 
       opcion = JOptionPane.showOptionDialog(null, (!(Cuenta.getActivo() == null)) ? Cuenta.getActivo().toString() : "",
-          "eliga un opcion",
+          "elija un opcion",
           JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
           opciones[0]);
 
-      if (Cuenta.getActivo() == null && (opcion >= 1 && opcion != 8)) {
+      if (Cuenta.getActivo() == null && (opcion >= 1 && opcion != 10)) {
         JOptionPane.showMessageDialog(null, "no lograste ingresar a la cuenta", "!",
             JOptionPane.WARNING_MESSAGE);
         continue;
@@ -49,7 +49,9 @@ public class main {
         case 5 -> Movimiento.transferir(lista);
         case 6 -> Movimiento.historia();
         case 7 -> Movimiento.eliminar(lista);
-        case 8 -> corriendo = Movimiento.quitar();
+        case 8 -> Movimiento.aplicarInteresMensual();
+        case 9 -> Movimiento.inversionPlazoFijo();
+        case 10 -> corriendo = Movimiento.quitar();
       }
 
     } while (corriendo);
