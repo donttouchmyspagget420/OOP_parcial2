@@ -9,6 +9,7 @@ public class main {
   public static void main(String[] args) throws Exception {
     LinkedList<Cuenta> lista = new LinkedList<>();
     Movimiento.Funciones[] funciones = Movimiento.Funciones.values();
+    Cajerx cajerx = new Cajerx(1000000);
     String[] opciones = new String[funciones.length];
     int opcion;
     boolean corriendo = true;
@@ -44,8 +45,8 @@ public class main {
         case 0 -> Movimiento.registrar(lista);
         case 1 -> Movimiento.login(lista);
         case 2 -> Movimiento.cambiarContrasenia();
-        case 3 -> Movimiento.depositar();
-        case 4 -> Movimiento.retirar();
+        case 3 -> Movimiento.depositar(cajerx);
+        case 4 -> Movimiento.retirar(cajerx);
         case 5 -> Movimiento.transferir(lista);
         case 6 -> Movimiento.historia();
         case 7 -> Movimiento.eliminar(lista);
@@ -53,6 +54,8 @@ public class main {
         case 9 -> Movimiento.inversionPlazoFijo();
         case 10 -> corriendo = Movimiento.quitar();
       }
+
+      System.out.println(cajerx.getTotal());
 
     } while (corriendo);
   }

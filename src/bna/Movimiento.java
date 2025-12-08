@@ -85,37 +85,77 @@ public class Movimiento extends Boleta {
     Cuenta.setActivo(lista.get(id));
   }
 
-  static void depositar() throws Exception {
+  static void depositar(Cajerx cajerx) throws Exception {
     Cuenta.getActivo().chequiar_pin();
     double monto = 0;
     do {
       try {
         monto = Double.valueOf(JOptionPane.showInputDialog("cuanto quieres depositar?"));
 
-        Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() + monto);
+        if (monto > cajerx.limitoDepositar) {
+          JOptionPane.showMessageDialog(null,
+              "no se puede depositar " + monto + "\n" + "tenes limito de deposito de: " + cajerx.limitoDepositar,
+              "error",
+              JOptionPane.WARNING_MESSAGE);
+          continue;
+        }
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "no se puede depositar " + monto, "error",
             JOptionPane.WARNING_MESSAGE);
       }
-    } while (monto <= 0);
+    } while (monto <= 0 || monto > cajerx.limitoDepositar);
+    Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() + monto);
+
+    cajerx.setTotal(cajerx.getTotal() + monto);
 
     Movimiento movimiento = new Movimiento(Funciones.DEPOSITAR, Cuenta.getActivo(), monto);
     Cuenta.getActivo().agregarHistoria(movimiento.toString());
   }
 
-  static void retirar() throws Exception {
+  static void retirar(Cajerx cajerx) throws Exception {
+    if (cajerx.getTotal() <= 0 || Cuenta.getActivo().getDinero() <= 0) {
+      JOptionPane.showMessageDialog(null,
+          "no hay dinero en la caja, traiga a la mañana",
+          "error",
+          JOptionPane.WARNING_MESSAGE);
+      return;
+    }
     Cuenta.getActivo().chequiar_pin();
     double monto = 0;
     do {
       try {
         monto = Double.valueOf(JOptionPane.showInputDialog("cuanto queres retirar?"));
 
-        Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() - monto);
+        if (monto > Cuenta.getActivo().getDinero()) {
+          JOptionPane.showMessageDialog(null,
+              "no se puede retirar " + monto + "\n" + "no tenes tan dinero",
+              "error",
+              JOptionPane.WARNING_MESSAGE);
+          continue;
+        }
+        if (monto > cajerx.limitoRetirar) {
+          JOptionPane.showMessageDialog(null,
+              "no se puede retirar " + monto + "\n" + cajerx.getTotal() + " quedan en la caja",
+              "error",
+              JOptionPane.WARNING_MESSAGE);
+          continue;
+        }
+        if (monto > cajerx.getTotal()) {
+          JOptionPane.showMessageDialog(null,
+              "no se puede depositar " + monto + "\n" + "tenes limito de retirar de: " + cajerx.limitoRetirar,
+              "error",
+              JOptionPane.WARNING_MESSAGE);
+          continue;
+        }
       } catch (Exception e) {
         JOptionPane.showMessageDialog(null, "no se puede retirar " + monto, "error",
             JOptionPane.WARNING_MESSAGE);
       }
-    } while (monto <= 0);
+    } while (monto <= 0 || monto > cajerx.limitoRetirar || monto > cajerx.getTotal()
+        || monto > Cuenta.getActivo().getDinero());
+
+    cajerx.setTotal(cajerx.getTotal() - monto);
+    Cuenta.getActivo().setDinero(Cuenta.getActivo().getDinero() - monto);
 
     Movimiento movimiento = new Movimiento(Funciones.RETIRAR, Cuenta.getActivo(), monto);
     Cuenta.getActivo().agregarHistoria(movimiento.toString());
@@ -192,40 +232,47 @@ public class Movimiento extends Boleta {
   static void aplicarInteresMensual() {
     Cuenta.getActivo().chequiar_pin();
 
-    try {
-      double tasa = Double.parseDouble(JOptionPane.showInputDialog("Ingrese tasa de interés (%):"));
-      double interes = Cuenta.getActivo().getDinero() * tasa / 100;
-      double nuevoSaldo = Cuenta.getActivo().getDinero() + interes;
+    double tasa = Math.random();
 
-      Cuenta.getActivo().setDinero(nuevoSaldo);
-      Cuenta.getActivo().agregarHistoria("Interés mensual " + tasa + "%: +" + interes);
+    int rand = Math.round((float) Math.random());
 
-      JOptionPane.showMessageDialog(null,
-          "Interés mensual aplicado: " + interes + "\nNuevo saldo: " + nuevoSaldo,
-          "Interés Aplicado", JOptionPane.INFORMATION_MESSAGE);
-    } catch (Exception e) {
-      JOptionPane.showMessageDialog(null,
-          "Error al aplicar interés",
-          "Error", JOptionPane.ERROR_MESSAGE);
+    if (rand == 0) {
+      tasa = -tasa;
     }
+
+    double interes = Cuenta.getActivo().getDinero() * tasa / 100;
+    double nuevoSaldo = Cuenta.getActivo().getDinero() + interes;
+
+    Cuenta.getActivo().setDinero(nuevoSaldo);
+    Cuenta.getActivo().agregarHistoria("Interés mensual " + tasa + "%: +" + interes);
+
+    JOptionPane.showMessageDialog(null,
+        "Interés mensual aplicado: " + interes + "\nNuevo saldo: " + nuevoSaldo,
+        "Interés Aplicado", JOptionPane.INFORMATION_MESSAGE);
+
+    Movimiento movimiento = null;
+
+    try {
+      movimiento = new Movimiento(Funciones.APLICAR_INTERES, Cuenta.getActivo(), nuevoSaldo);
+    } catch (Exception e) {
+    }
+    Cuenta.getActivo().agregarHistoria(movimiento.toString(tasa));
   }
 
   static void inversionPlazoFijo() {
     Cuenta.getActivo().chequiar_pin();
+    double monto = 0;
+    double meses = 0;
+    double rendimiento = Math.random() * 100;
+    double nuevoSaldo = 0;
+    do {
+      try {
+        monto = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el monto a invertir:"));
+        meses = Double.parseDouble(JOptionPane.showInputDialog("Ingrese los meses de la inversión:"));
 
-    try {
-      String montoStr = JOptionPane.showInputDialog("Ingrese el monto a invertir:");
-      String mesesStr = JOptionPane.showInputDialog("Ingrese los meses de la inversión:");
-      String rendimientoStr = JOptionPane.showInputDialog("Ingrese rendimiento anual (%):");
-
-      if (montoStr != null && mesesStr != null && rendimientoStr != null) {
-        double monto = Double.parseDouble(montoStr);
-        int meses = Integer.parseInt(mesesStr);
-        double rendimiento = Double.parseDouble(rendimientoStr);
-
-        if (monto > 0 && monto <= Cuenta.getActivo().getDinero() && meses > 0) {
+        if (monto > 0 && monto <= Cuenta.getActivo().getDinero() && meses > 0 && meses <= 12) {
           double ganancia = monto * (rendimiento * meses / 12) / 100;
-          double nuevoSaldo = Cuenta.getActivo().getDinero() + ganancia;
+          nuevoSaldo = Cuenta.getActivo().getDinero() + ganancia;
 
           Cuenta.getActivo().setDinero(nuevoSaldo);
           Cuenta.getActivo().agregarHistoria("Inversión " + meses + " meses: +" + ganancia);
@@ -239,12 +286,20 @@ public class Movimiento extends Boleta {
               "Monto inválido o fondos insuficientes",
               "Error", JOptionPane.ERROR_MESSAGE);
         }
+
+      } catch (Exception e) {
+        JOptionPane.showMessageDialog(null,
+            "Error en la inversión",
+            "Error", JOptionPane.ERROR_MESSAGE);
       }
+    } while (monto <= 0 || monto > Cuenta.getActivo().getDinero() || meses <= 0 || meses > 12);
+    Movimiento movimiento = null;
+
+    try {
+      movimiento = new Movimiento(Funciones.INVERSION_PLAZO_FIJO, Cuenta.getActivo(), nuevoSaldo);
     } catch (Exception e) {
-      JOptionPane.showMessageDialog(null,
-          "Error en la inversión",
-          "Error", JOptionPane.ERROR_MESSAGE);
     }
+    Cuenta.getActivo().agregarHistoria(movimiento.toString(rendimiento));
   }
 
   private Movimiento(Funciones func, Cuenta cuenta, double dinero) throws Exception {
@@ -278,6 +333,14 @@ public class Movimiento extends Boleta {
 
   @Override
   public String toString() {
+    return "remitente: " + getRemitente() + "\n" +
+        "beneficiario: " + getBeneficiario() + "\n" +
+        "dinero: " + getDinero() + "\n" +
+        "fecha: " + getFecha() + "\n" +
+        "accion: " + funcion + "\n";
+  }
+
+  public String toString(double tasa) {
     return "remitente: " + getRemitente() + "\n" +
         "beneficiario: " + getBeneficiario() + "\n" +
         "dinero: " + getDinero() + "\n" +

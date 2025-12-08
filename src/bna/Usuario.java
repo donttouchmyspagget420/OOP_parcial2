@@ -55,10 +55,7 @@ abstract class Usuario {
     return dinero;
   }
 
-  public void setDinero(double dinero) throws Exception {
-    if (dinero < 0) {
-      throw new Exception("no podes tener balance menor a 0");
-    }
+  public void setDinero(double dinero) {
     this.dinero = dinero;
   }
 

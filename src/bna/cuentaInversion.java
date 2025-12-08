@@ -1,9 +1,9 @@
 package bna;
 
-public class cuentaAhorro extends Cuenta {
+public class cuentaInversion extends Cuenta {
     private double tasaInteres;
 
-    public cuentaAhorro(int size, String nombre, int pin, double dinero, double tasaInteres) throws Exception {
+    public cuentaInversion(int size, String nombre, int pin, double dinero, double tasaInteres) throws Exception {
         super(size, nombre, pin, dinero);  
         this.tasaInteres = tasaInteres;
     }
